@@ -64,7 +64,7 @@ vector store. Phase 2 (retrieval) will read from that store.
 ## Quick start
 
 ```bash
-cd employee-handbook-rag
+cd handbook-rag-assistant
 python3.12 -m venv .venv          # ChromaDB needs Python 3.11–3.13, NOT 3.14
 source .venv/bin/activate
 pip install -r requirements.txt
@@ -331,9 +331,9 @@ Registered in `~/.cursor/mcp.json`:
 
 ```json
 "employee-handbook": {
-  "command": "/abs/path/to/employee-handbook-rag/.venv/bin/python",
+  "command": "/abs/path/to/handbook-rag-assistant/.venv/bin/python",
   "args": ["-m", "mcp_server"],
-  "env": { "PYTHONPATH": "/abs/path/to/employee-handbook-rag" }
+  "env": { "PYTHONPATH": "/abs/path/to/handbook-rag-assistant" }
 }
 ```
 

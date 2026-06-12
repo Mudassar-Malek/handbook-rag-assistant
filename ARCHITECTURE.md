@@ -274,7 +274,7 @@ retrieved and how it was graded.
 ## 6. Repository map
 
 ```
-employee-handbook-rag/
+handbook-rag-assistant/
 ├── ingestion/     Phase 1  PDF → chunks → ChromaDB
 ├── retrieval/     Phase 2  hybrid search (vector + BM25 + RRF + rerank)
 ├── agents/        Phase 3  LangGraph multi-agent assistant
