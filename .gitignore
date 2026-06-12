@@ -1,0 +1,35 @@
+# Python
+.venv/
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+
+# Secrets / local config
+.env
+
+# Source document(s) — never commit proprietary PDFs
+*.pdf
+data/
+
+# Generated data artifacts (regenerate via ingestion / evaluation)
+chroma_db/
+chunks.json
+model_cache/
+
+# Conversation memory (LangGraph checkpointer)
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+
+# Evaluation outputs & generated datasets
+results/
+evaluation/dataset.jsonl
+evaluation/dataset_synthetic_unreviewed.jsonl
+evaluation/.judge_cache*
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/

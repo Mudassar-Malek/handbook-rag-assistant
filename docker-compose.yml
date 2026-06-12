@@ -1,0 +1,40 @@
+# Employee Handbook RAG — API + UI.
+# Ingestion is NOT a service; run it once as a one-off (see README-DEPLOY.md):
+#   docker compose run --rm api python -m ingestion.ingest data/Employee_Handbook_2026.pdf
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: api/Dockerfile
+    env_file: .env
+    environment:
+      # Keep per-thread memory on the mounted sqlite file (workdir is /app).
+      CHECKPOINT_DB: checkpoints.sqlite
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./chroma_db:/app/chroma_db:ro          # Phase 1 vector store (read-only)
+      - ./checkpoints.sqlite:/app/checkpoints.sqlite  # per-thread memory (touch it first)
+      - model_cache:/model_cache               # cross-encoder + embedding models
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8000/health').getcode()==200 else 1)"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 90s   # first start downloads the cross-encoder into model_cache
+
+  ui:
+    build:
+      context: .
+      dockerfile: ui/Dockerfile
+    environment:
+      API_BASE_URL: http://api:8000
+    ports:
+      - "8501:8501"
+    depends_on:
+      api:
+        condition: service_healthy
+
+volumes:
+  model_cache:

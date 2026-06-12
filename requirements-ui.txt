@@ -1,0 +1,4 @@
+# Lightweight deps for the Streamlit UI image — it talks ONLY to the API over
+# HTTP, so it needs none of the ML/retrieval stack.
+streamlit>=1.36
+httpx>=0.27

@@ -1,0 +1,49 @@
+# Phase 1 + 2. Python 3.11+ (tested on 3.12).
+# NOTE: ChromaDB does not yet support Python 3.14 — use 3.11/3.12/3.13.
+
+# --- Phase 1: ingestion ---
+PyMuPDF>=1.24          # PDF parsing (imported as `fitz`)
+chromadb>=0.5          # vector store (PersistentClient, cosine space)
+python-dotenv>=1.0     # load embedding-provider config from .env
+
+# --- Phase 2: retrieval ---
+rank-bm25>=0.2.2       # BM25 keyword search
+pydantic-settings>=2.0 # typed settings from .env
+# The reranker stack is version-sensitive: torch 2.2.x needs numpy<2, and
+# transformers 5.x is incompatible with it. These pins are a known-good set.
+numpy<2
+transformers>=4.40,<4.46
+sentence-transformers>=3.0,<3.4   # cross-encoder reranker
+
+# --- Phase 3: multi-agent system (LangGraph) ---
+# The langchain stack is pinned to 0.3.x: RAGAS 0.2.x (Phase 5) imports module
+# paths that were removed in langchain 1.x, while our agents work on 0.3.x too.
+langgraph>=0.2.40,<0.3           # StateGraph orchestration
+langgraph-checkpoint-sqlite>=2.0,<3  # per-thread memory (SqliteSaver)
+langchain-core>=0.3,<0.4         # message types + structured output
+langchain-anthropic>=0.3,<0.4    # provider: Anthropic (needs ANTHROPIC_API_KEY)
+langchain-openai>=0.3,<0.4       # provider: OpenAI (needs OPENAI_API_KEY)
+langchain-ollama>=0.2,<1         # provider: local Ollama (no key; needs `ollama serve`)
+mcp>=1.2                         # expose the retriever as an MCP tool for Cursor
+
+# --- Phase 4: observability (Langfuse) ---
+langfuse>=3,<4                   # tracing, scores, prompt management (SDK v3)
+langchain>=0.3,<0.4              # required by langfuse's LangChain callback handler
+
+# --- Phase 5: evaluation (RAGAS) ---
+ragas>=0.2,<0.3                  # faithfulness/relevancy/correctness + context P/R + TestsetGenerator
+langchain-community>=0.3,<0.4    # ragas pulls chat/embedding shims from here
+langchain-huggingface>=0.1,<1    # local HF embeddings for the RAGAS judge (no paid embedding calls)
+tiktoken>=0.7                    # token-based RecursiveCharacterTextSplitter (Strategy B)
+
+# --- Phase 6: API + UI ---
+fastapi>=0.110              # backend framework
+uvicorn[standard]>=0.29     # ASGI server
+sse-starlette>=2.0          # Server-Sent Events for streaming /ask
+slowapi>=0.1.9              # per-IP rate limiting
+aiosqlite>=0.20,<0.21       # async checkpointer; 0.21 dropped Connection.is_alive (needed by langgraph-checkpoint-sqlite 2.x)
+httpx>=0.27                 # API client (UI + tests)
+streamlit>=1.36             # chat UI (only needed for the ui/ service)
+
+# Testing (optional; tests also run under the stdlib `unittest`).
+pytest>=8.0
