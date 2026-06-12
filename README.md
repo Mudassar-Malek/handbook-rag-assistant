@@ -34,8 +34,16 @@ tool, the API, and the UI:
 
 ```bash
 python -m retrieval.search "your question here" --k 5
-python -m agents.chat --provider fake   # or anthropic / openai / ollama
+
+# For your OWN documents, use a real LLM provider (it routes/answers generically):
+LLM_PROVIDER=ollama python -m agents.chat --provider ollama --model llama3.2:3b
+#   ...or anthropic / openai with the matching API key in .env
 ```
+
+> The offline `--provider fake` router is keyword-tuned to the bundled *sample*
+> handbook's vocabulary (leave, probation, POSH, …), so it's best for this repo's
+> tests/demos. For arbitrary documents, use a real provider (Ollama needs no key).
+> Retrieval itself is fully generic regardless of provider.
 
 | Source | Extensions | How it's split |
 |--------|-----------|----------------|

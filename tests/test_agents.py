@@ -31,9 +31,32 @@ def _sections(text: str) -> set[str]:
     return set(re.findall(r"\[(\d+(?:\.\d+)?)\b", text))
 
 
+def _require_collection() -> None:
+    """Skip (don't error) when the ChromaDB collection isn't populated yet.
+
+    These are integration tests against the ingested sample handbook; a fresh
+    clone has no data until `python -m ingestion.ingest <pdf>` is run.
+    """
+    import chromadb
+
+    from retrieval.config import get_settings
+
+    settings = get_settings()
+    try:
+        client = chromadb.PersistentClient(path=settings.chroma_path)
+        col = client.get_collection(settings.collection_name)
+        if col.count() == 0:
+            raise unittest.SkipTest("Collection is empty; run Phase 1 ingestion first.")
+    except unittest.SkipTest:
+        raise
+    except Exception as exc:  # collection missing / chroma not set up
+        raise unittest.SkipTest(f"ChromaDB collection unavailable: {exc}")
+
+
 class AgentTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
+        _require_collection()
         # One shared agent (the real retriever / reranker loads only once).
         cls.agent = HandbookAgent(get_agent_settings(llm_provider=PROVIDER))
 

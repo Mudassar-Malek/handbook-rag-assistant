@@ -21,6 +21,7 @@ sentence-transformers>=3.0,<3.4   # cross-encoder reranker
 langgraph>=0.2.40,<0.3           # StateGraph orchestration
 langgraph-checkpoint-sqlite>=2.0,<3  # per-thread memory (SqliteSaver)
 langchain-core>=0.3,<0.4         # message types + structured output
+langchain-text-splitters>=0.3,<0.4  # RecursiveCharacterTextSplitter (generic ingestion + eval Strategy B)
 langchain-anthropic>=0.3,<0.4    # provider: Anthropic (needs ANTHROPIC_API_KEY)
 langchain-openai>=0.3,<0.4       # provider: OpenAI (needs OPENAI_API_KEY)
 langchain-ollama>=0.2,<1         # provider: local Ollama (no key; needs `ollama serve`)
